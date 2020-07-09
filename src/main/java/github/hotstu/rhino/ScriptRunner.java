@@ -1,10 +1,9 @@
-package github.hotstu.rihino;
+package github.hotstu.rhino;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class ScriptRunner extends Thread {

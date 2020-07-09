@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'github.hotstu.rihino'
+group 'github.hotstu.rhino'
 version '1.0-SNAPSHOT'
 
 repositories {
@@ -15,7 +15,7 @@ configurations {
 task fatjar(type: Jar) {
     group 'build'
     manifest {
-        attributes 'Main-Class': 'github.hotstu.rihino.Main'
+        attributes 'Main-Class': 'github.hotstu.rhino.Main'
     }
     from {
         configurations.fatJar.collect {

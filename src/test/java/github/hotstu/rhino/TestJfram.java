@@ -1,4 +1,4 @@
-package github.hotstu.rihino;
+package github.hotstu.rhino;
 
 import org.junit.Test;
 
