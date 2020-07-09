@@ -37,7 +37,12 @@
         matchBrackets: true,
         theme: 'monokai'
     });
-
+    editor.setValue("const frame = new Packages.javax.swing.JFrame();\n" +
+        "const label = new Packages.java.awt.TextField();\n" +
+        "label.text = \"hello,world\"\n" +
+        "frame.add(label);\n" +
+        "frame.setSize(400, 400);\n" +
+        "frame.visible = true;")
     async function postData(url = '', data = "") {
         // Default options are marked with *
         const response = await fetch(url, {

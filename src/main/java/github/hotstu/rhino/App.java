@@ -88,7 +88,12 @@ public class App extends NanoHTTPD {
                     "        matchBrackets: true,\n" +
                     "        theme: 'monokai'\n" +
                     "    });\n" +
-                    "\n" +
+                    "    editor.setValue(\"const frame = new Packages.javax.swing.JFrame();\\n\" +\n" +
+                    "        \"const label = new Packages.java.awt.TextField();\\n\" +\n" +
+                    "        \"label.text = \\\"hello,world\\\"\\n\" +\n" +
+                    "        \"frame.add(label);\\n\" +\n" +
+                    "        \"frame.setSize(400, 400);\\n\" +\n" +
+                    "        \"frame.visible = true;\")\n" +
                     "    async function postData(url = '', data = \"\") {\n" +
                     "        // Default options are marked with *\n" +
                     "        const response = await fetch(url, {\n" +
