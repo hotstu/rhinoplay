@@ -2,11 +2,12 @@ package github.hotstu.rhino;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.tools.shell.Global;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-public class ScriptRunner extends Thread {
+public class ScriptRunner {
     private static ScriptRunner sInstance;
     private final Context context;
     private final Scriptable scope;
@@ -17,15 +18,14 @@ public class ScriptRunner extends Thread {
         // Creates and enters a Context. The Context stores information
         // about the execution environment of a script.
         context = Context.enter();
-            // Initialize the standard objects (Object, Function, etc.)
-            // This must be done before scripts can be executed. Returns
-            // a scope object that we use in later calls.
-        scope = context.initStandardObjects();
+        Global global = new Global(context);
+        // Initialize the standard objects (Object, Function, etc.)
+        // This must be done before scripts can be executed. Returns
+        // a scope object that we use in later calls.
+        scope = context.initStandardObjects(global);
         mQuene = new ArrayBlockingQueue<ScirptTask>(10);
-        setName("scriptRunner");
     }
 
-    @Override
     public synchronized void start() {
         this.mStoped = false;
         while (!mStoped) {

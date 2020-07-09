@@ -31,6 +31,6 @@ dependencies {
     implementation fileTree(dir: 'libs',  include: ['*.jar'])
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
     implementation 'com.google.code.gson:gson:2.2.4'
-    implementation group: 'org.mozilla', name: 'rhino', version: '1.7.12'
+    //implementation group: 'org.mozilla', name: 'rhino', version: '1.7.12'
 
 }

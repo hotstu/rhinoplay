@@ -3,17 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Rihono Play Groud</title>
+    <link rel="stylesheet" href="./static/lib/codemirror.css">
+    <link rel="stylesheet" href="./static/theme/monokai.css">
+    <script src="./static/lib/codemirror.js"></script>
+    <script src="./static/mode/javascript/javascript.js"></script>
+    <script src="./static/addon/selection/active-line.js"></script>
+    <script src="./static/addon/edit/matchbrackets.js"></script>
+    <style>
+        .CodeMirror {
+            height: 480px;
+        }
+    </style>
 </head>
 <body>
 <div>
     <div>
-        <textarea class="article-input" id="article-input" style="width: 90%" type="text" rows="25">
-const frame = new Packages.javax.swing.JFrame();
-const label = new Packages.java.awt.TextField();
-label.text = "hello,world"
-frame.add(label);
-frame.setSize(400, 400);
-frame.visible = true;
+        <textarea  id="code" style="height: 600px">
         </textarea>
         <button id="send">发送</button>
     </div>
@@ -25,7 +30,13 @@ frame.visible = true;
 </div>
 
 <script>
-    var $ = document.querySelector.bind(document);
+    const $ = document.querySelector.bind(document);
+    const editor = CodeMirror.fromTextArea($("#code"), {
+        lineNumbers: true,
+        styleActiveLine: true,
+        matchBrackets: true,
+        theme: 'monokai'
+    });
 
     async function postData(url = '', data = "") {
         // Default options are marked with *
@@ -57,10 +68,9 @@ frame.visible = true;
     }
 
     $("#send").addEventListener('click', ev => {
-        let innerText = $("#article-input").value;
-        console.log($("#article-input"))
+        //console.log(editor)
         const task = async () => {
-            let message = await postData('/run', innerText);
+            let message = await postData('/run', editor.getValue());
             console.log(message)
             addResponse(message)
         }

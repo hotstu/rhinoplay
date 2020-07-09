@@ -9,13 +9,16 @@ import java.util.HashMap;
 public class App extends NanoHTTPD {
 
     private final Gson g;
+    private final StaticHandler staticHandler;
 
     public App() throws IOException {
         super(8080);
         g = new Gson();
+        staticHandler = new StaticHandler();
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
         System.out.println("\nRunning! Point your browsers to http://localhost:8080/ \n");
         ScriptRunner.getInstance().start();
+
     }
 
     @Override
@@ -51,17 +54,22 @@ public class App extends NanoHTTPD {
                     "<head>\n" +
                     "    <meta charset=\"UTF-8\">\n" +
                     "    <title>Rihono Play Groud</title>\n" +
+                    "    <link rel=\"stylesheet\" href=\"./static/lib/codemirror.css\">\n" +
+                    "    <link rel=\"stylesheet\" href=\"./static/theme/monokai.css\">\n" +
+                    "    <script src=\"./static/lib/codemirror.js\"></script>\n" +
+                    "    <script src=\"./static/mode/javascript/javascript.js\"></script>\n" +
+                    "    <script src=\"./static/addon/selection/active-line.js\"></script>\n" +
+                    "    <script src=\"./static/addon/edit/matchbrackets.js\"></script>\n" +
+                    "    <style>\n" +
+                    "        .CodeMirror {\n" +
+                    "            height: 480px;\n" +
+                    "        }\n" +
+                    "    </style>\n" +
                     "</head>\n" +
                     "<body>\n" +
                     "<div>\n" +
                     "    <div>\n" +
-                    "        <textarea class=\"article-input\" id=\"article-input\" style=\"width: 90%\" type=\"text\" rows=\"25\">\n" +
-                    "const frame = new Packages.javax.swing.JFrame();\n" +
-                    "const label = new Packages.java.awt.TextField();\n" +
-                    "label.text = \"hello,world\"\n" +
-                    "frame.add(label);\n" +
-                    "frame.setSize(400, 400);\n" +
-                    "frame.visible = true;\n" +
+                    "        <textarea  id=\"code\" style=\"height: 600px\">\n" +
                     "        </textarea>\n" +
                     "        <button id=\"send\">发送</button>\n" +
                     "    </div>\n" +
@@ -73,7 +81,13 @@ public class App extends NanoHTTPD {
                     "</div>\n" +
                     "\n" +
                     "<script>\n" +
-                    "    var $ = document.querySelector.bind(document);\n" +
+                    "    const $ = document.querySelector.bind(document);\n" +
+                    "    const editor = CodeMirror.fromTextArea($(\"#code\"), {\n" +
+                    "        lineNumbers: true,\n" +
+                    "        styleActiveLine: true,\n" +
+                    "        matchBrackets: true,\n" +
+                    "        theme: 'monokai'\n" +
+                    "    });\n" +
                     "\n" +
                     "    async function postData(url = '', data = \"\") {\n" +
                     "        // Default options are marked with *\n" +
@@ -105,10 +119,9 @@ public class App extends NanoHTTPD {
                     "    }\n" +
                     "\n" +
                     "    $(\"#send\").addEventListener('click', ev => {\n" +
-                    "        let innerText = $(\"#article-input\").value;\n" +
-                    "        console.log($(\"#article-input\"))\n" +
+                    "        //console.log(editor)\n" +
                     "        const task = async () => {\n" +
-                    "            let message = await postData('/run', innerText);\n" +
+                    "            let message = await postData('/run', editor.getValue());\n" +
                     "            console.log(message)\n" +
                     "            addResponse(message)\n" +
                     "        }\n" +
@@ -121,6 +134,8 @@ public class App extends NanoHTTPD {
                     "</body>\n" +
                     "</html>\n";
             return newFixedLengthResponse(msg);
+        } else if (staticHandler.isHandle(session)) {
+            return staticHandler.handle(session);
         } else {
             return newFixedLengthResponse(Response.Status.NOT_FOUND, "text/html", "Page Not Found");
         }

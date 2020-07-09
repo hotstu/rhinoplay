@@ -4,6 +4,8 @@ import org.junit.Test;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TestJfram {
     @Test
@@ -15,5 +17,18 @@ public class TestJfram {
         jFrame.add(textField);
         jFrame.setVisible(true);
         Thread.sleep(5000);
+    }
+
+    @Test
+    public void test2() {
+        Pattern pattern = Pattern.compile("^/static/([\\s|\\S]*)$", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher("/static/hello/he.jpg");
+        if (matcher.matches()) {
+            for (int i = 0; i < matcher.groupCount(); i++) {
+                System.out.println(matcher.group(i+1));
+            }
+        }
+
+
     }
 }
