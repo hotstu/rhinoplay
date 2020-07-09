@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rihono Play Groud</title>
+</head>
+<body>
+<div>
+    <div>
+        <textarea class="article-input" id="article-input" style="width: 90%" type="text" rows="25">
+const frame = new Packages.javax.swing.JFrame();
+const label = new Packages.java.awt.TextField();
+label.text = "hello,world"
+frame.add(label);
+frame.setSize(400, 400);
+frame.visible = true;
+        </textarea>
+        <button id="send">发送</button>
+    </div>
+    <div>
+        <button id="clear" style="display: block">清除</button>
+        <ul></ul>
+    </div>
+
+</div>
+
+<script>
+    var $ = document.querySelector.bind(document);
+
+    async function postData(url = '', data = "") {
+        // Default options are marked with *
+        const response = await fetch(url, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: data // body data type must match "Content-Type" header
+        });
+        return response.json(); // parses JSON response into native JavaScript objects
+    }
+    const createProperty = function (obj) {
+        var label = document.createElement("li");
+        label.innerText = obj.success ? obj.data : obj.err;
+        if (!obj.success) {
+            label.className = 'err';
+        }
+        return label
+    }
+    var ul1 = $("ul");
+    const addResponse = (obj) => {
+        ul1.appendChild(createProperty(obj))
+    }
+
+    $("#send").addEventListener('click', ev => {
+        let innerText = $("#article-input").value;
+        console.log($("#article-input"))
+        const task = async () => {
+            let message = await postData('/run', innerText);
+            console.log(message)
+            addResponse(message)
+        }
+        task()
+    })
+    $("#clear").addEventListener('click', ev => {
+        ul1.innerHTML = ''
+    })
+</script>
+</body>
+</html>

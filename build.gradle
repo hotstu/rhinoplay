@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+}
+
+group 'github.hotstu.rihino'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    fatJar
+}
+task fatjar(type: Jar) {
+    group 'build'
+    manifest {
+        attributes 'Main-Class': 'github.hotstu.rihino.Main'
+    }
+    from {
+        configurations.fatJar.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    with jar
+}
+
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation fileTree(dir: 'libs',  include: ['*.jar'])
+    implementation 'org.nanohttpd:nanohttpd:2.3.1'
+    implementation 'com.google.code.gson:gson:2.2.4'
+    implementation group: 'org.mozilla', name: 'rhino', version: '1.7.12'
+
+}
