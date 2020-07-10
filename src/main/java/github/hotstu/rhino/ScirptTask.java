@@ -3,6 +3,7 @@ package github.hotstu.rhino;
 import java.util.concurrent.CountDownLatch;
 
 public class ScirptTask {
+    public int what = 0;
     public final String input;
     private final CountDownLatch lock;
     public String output = null;

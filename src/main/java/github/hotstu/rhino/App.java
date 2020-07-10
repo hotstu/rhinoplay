@@ -47,13 +47,16 @@ public class App extends NanoHTTPD {
                 e.printStackTrace();
             }
             return newFixedLengthResponse(Response.Status.OK, "application/json", "{\"success\": true}");
+        } else if(uri.matches("^/reset$")){
+            ScriptRunner.getInstance().resetScope();
+            return newFixedLengthResponse(Response.Status.OK, "application/json", "{\"success\": true}");
         } else if (uri.matches("^/$")) {
             System.out.println("显示页面");
             String msg = "<!DOCTYPE html>\n" +
                     "<html lang=\"en\">\n" +
                     "<head>\n" +
                     "    <meta charset=\"UTF-8\">\n" +
-                    "    <title>Rihono Play Groud</title>\n" +
+                    "    <title>Rhono Play Groud</title>\n" +
                     "    <link rel=\"stylesheet\" href=\"./static/lib/codemirror.css\">\n" +
                     "    <link rel=\"stylesheet\" href=\"./static/theme/monokai.css\">\n" +
                     "    <script src=\"./static/lib/codemirror.js\"></script>\n" +
@@ -64,17 +67,23 @@ public class App extends NanoHTTPD {
                     "        .CodeMirror {\n" +
                     "            height: 480px;\n" +
                     "        }\n" +
+                    "        li.err {\n" +
+                    "            color: tomato;\n" +
+                    "        }\n" +
                     "    </style>\n" +
                     "</head>\n" +
                     "<body>\n" +
                     "<div>\n" +
                     "    <div>\n" +
-                    "        <textarea  id=\"code\" style=\"height: 600px\">\n" +
+                    "        <textarea id=\"code\" style=\"height: 480px\">\n" +
                     "        </textarea>\n" +
-                    "        <button id=\"send\">发送</button>\n" +
                     "    </div>\n" +
-                    "    <div>\n" +
-                    "        <button id=\"clear\" style=\"display: block\">清除</button>\n" +
+                    "    <div style=\"display: flex\">\n" +
+                    "        <button id=\"send\" style=\"flex: 1\">发送</button>\n" +
+                    "        <button id=\"clear\" style=\"flex: 1\">清除日志</button>\n" +
+                    "        <button id=\"reset\" style=\"flex: 1\">重置scope</button>\n" +
+                    "    </div>\n" +
+                    "    <div style=\"height: 600px; overflow-y: auto\">\n" +
                     "        <ul></ul>\n" +
                     "    </div>\n" +
                     "\n" +
@@ -86,14 +95,20 @@ public class App extends NanoHTTPD {
                     "        lineNumbers: true,\n" +
                     "        styleActiveLine: true,\n" +
                     "        matchBrackets: true,\n" +
-                    "        theme: 'monokai'\n" +
+                    "        theme: 'monokai',\n" +
+                    "        \"extraKeys\": {\n" +
+                    "            'Ctrl-Enter': function () {\n" +
+                    "                $(\"#send\").dispatchEvent(new Event('click'))\n" +
+                    "            }\n" +
+                    "        }\n" +
                     "    });\n" +
-                    "    editor.setValue(\"const frame = new Packages.javax.swing.JFrame();\\n\" +\n" +
-                    "        \"const label = new Packages.java.awt.TextField();\\n\" +\n" +
-                    "        \"label.text = \\\"hello,world\\\"\\n\" +\n" +
-                    "        \"frame.add(label);\\n\" +\n" +
-                    "        \"frame.setSize(400, 400);\\n\" +\n" +
-                    "        \"frame.visible = true;\")\n" +
+                    "    editor.setValue(\"importPackage(Packages.javax.swing);\\n\" +\n" +
+                    "        \"const jFrame = new JFrame()\\n\" +\n" +
+                    "        \"jFrame.setSize(400, 400)\\n\" +\n" +
+                    "        \"const label = new JLabel(\\\"hello,world\\\", JLabel.CENTER)\\n\" +\n" +
+                    "        \"jFrame.add(label)\\n\" +\n" +
+                    "        \"jFrame.setVisible(true)\")\n" +
+                    "\n" +
                     "    async function postData(url = '', data = \"\") {\n" +
                     "        // Default options are marked with *\n" +
                     "        const response = await fetch(url, {\n" +
@@ -110,6 +125,7 @@ public class App extends NanoHTTPD {
                     "        });\n" +
                     "        return response.json(); // parses JSON response into native JavaScript objects\n" +
                     "    }\n" +
+                    "\n" +
                     "    const createProperty = function (obj) {\n" +
                     "        var label = document.createElement(\"li\");\n" +
                     "        label.innerText = obj.success ? obj.data : obj.err;\n" +
@@ -134,6 +150,14 @@ public class App extends NanoHTTPD {
                     "    })\n" +
                     "    $(\"#clear\").addEventListener('click', ev => {\n" +
                     "        ul1.innerHTML = ''\n" +
+                    "    })\n" +
+                    "    $(\"#reset\").addEventListener('click', ev => {\n" +
+                    "        const task = async () => {\n" +
+                    "            let message = await postData('/reset', {});\n" +
+                    "            console.log(message)\n" +
+                    "            addResponse(message)\n" +
+                    "        }\n" +
+                    "        task()\n" +
                     "    })\n" +
                     "</script>\n" +
                     "</body>\n" +

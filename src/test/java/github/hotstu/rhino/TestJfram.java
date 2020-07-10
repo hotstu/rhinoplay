@@ -3,7 +3,6 @@ package github.hotstu.rhino;
 import org.junit.Test;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,9 +11,8 @@ public class TestJfram {
     public void test1() throws InterruptedException {
         JFrame jFrame = new JFrame();
         jFrame.setSize(400, 400);
-        final TextField textField = new TextField();
-        textField.setText("hello,world");
-        jFrame.add(textField);
+        JLabel label = new JLabel("hello,world", JLabel.CENTER);
+        jFrame.add(label);
         jFrame.setVisible(true);
         Thread.sleep(5000);
     }
